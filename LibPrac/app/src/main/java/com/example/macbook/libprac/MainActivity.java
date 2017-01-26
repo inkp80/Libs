@@ -10,6 +10,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        final Realm realm = Realm.getDefaultInstance();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.github.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -43,8 +47,16 @@ public class MainActivity extends AppCompatActivity {
                 List<Repo> repos = response.body();
                 Log.d(TAG, "repos' size: " + repos.size());
                 mListViewer.setText("");
-                for(int i=0;i<repos.size();i++){
-                    mListViewer.append(repos.get(i).getName()+"-"+repos.get(i).getId()+"\n");
+                realm.beginTransaction();
+                realm.copyToRealmOrUpdate(repos);
+                //for(int i=0;i<repos.size();i++){
+                    //mListViewer.append(repos.get(i).getName()+"-"+repos.get(i).getId()+"\n");
+                //}
+                realm.commitTransaction();
+
+                RealmResults<Repo> all = realm.where(Repo.class).findAll();
+                for(int i=0;i<all.size();i++){
+                    mListViewer.append(all.get(i).getName()+"-"+all.get(i).getId()+"\n");
                 }
             }
 
@@ -54,4 +66,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

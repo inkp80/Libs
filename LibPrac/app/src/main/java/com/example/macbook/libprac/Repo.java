@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import io.realm.RealmObject;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -15,7 +16,7 @@ import retrofit2.http.Query;
  * Created by macbook on 2017. 1. 26..
  */
 
-public class Repo {
+public class Repo extends RealmObject {
     private int id;
     private String name;
 
@@ -34,4 +35,5 @@ public class Repo {
     public void setName(String name) {
         this.name = name;
     }
+
 }
